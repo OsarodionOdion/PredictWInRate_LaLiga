@@ -1,0 +1,49 @@
+---
+title: "Final Project Proposal"
+author: "Osarodion"
+date: "3/7/2022"
+output: 
+ html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Advanced Business Analytics – Final Project Proposal
+====================================================
+
+Team Members
+------------
+Osarodion Ogbebor Evans
+
+Project Title
+-------------
+Predicting win rates for the 2017/2018 Spanish la liga season
+
+Type of Final Project
+---------------------
+Type 1 - Analysis of a data set of interest
+
+Executive Summary of the Proposed Project
+-----------------------------------------
+
+The Spanish la liga is often referred to as the most competitive football (soccer) league in the world. Home to the most successful football teams in Europe, the league is often considered the toughest. Winning the league requires acquiring the most points from all games played in the season. For every season, there is a total of 38 games for every team .i.e. 19 home games and 19 away games. For every team, a win earns 3 points, a draw earns 1 point and a loss earns 0 point.
+
+With lesser goals scored and more goals conceded than the runner-up, Real Madrid was the crowned champion of the 2016-2017 la liga Season. 2017-2018 season was won by Barcelona with more goals scored and more goals conceded than the runner-up (Atletico Madrid). However, Real Madrid ended the season in 3rd place having scored 30 goals more than the runner-up, and 5 goals less than the season champion.
+
+This project analyzes different match statistics and their effects on win rates. It covers the use of R in creating different predictive models, and their effect in predicting win rates for different seasons.
+
+Data Needs and Sources
+-----------------------
+The data required for this project is a table consisting of different statistics for every game of the season. This data will be extracted from Data Hub [Data Hub Spanish La Liga Dataset](https://www.football-data.co.uk/spainm.php)
+
+Anticipated Challenges
+-----------------------
+A major challenge will be identifying the names of the columns in the raw data file. Most columns are named as abbreviations of different statistics collected in every game. The website does not provide definitions for these abbreviations.
+
+Another challenge will be data transformation and binary classification in a case requiring logistic regression.
+
+Personal Learning Objectives
+----------------------------
+This project provides me the opportunity to learn EDA, linear regression and logistic regression in R.
