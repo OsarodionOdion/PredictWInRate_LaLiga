@@ -1,5 +1,5 @@
 ---
-title: "Final Project - Predicting Win Rate in La Liga"
+title: "Final Project - Predicting Win Rates in La Liga"
 author: "Osarodion"
 date: "4/18/2022"
 output: html_document
@@ -9,22 +9,64 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r libraries}
+library(ggplot2)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+Advanced Business Analytics – Final Project
+===========================================
+
+Team Members
+------------
+Osarodion Ogbebor Evans
+
+Project Title
+-------------
+Predicting win rates for the 2017/2018 Spanish la liga season
+
+Type of Final Project
+---------------------
+Type 1 - Analysis of a data set of interest
+
+Executive Summary of the Proposed Project
+-----------------------------------------
+
+The Spanish la liga is often referred to as the most competitive football (soccer) league in the world. Home to the most successful football teams in Europe, the league is often considered the toughest. Winning the league requires acquiring the most points from all games played in the season. For every season, there is a total of 38 games for every team .i.e. 19 home games and 19 away games. For every team, a win earns 3 points, a draw earns 1 point and a loss earns 0 point.
+
+With lesser goals scored and more goals conceded than the runner-up, Real Madrid was the crowned champion of the 2016-2017 la liga Season. 2017-2018 season was won by Barcelona with more goals scored and more goals conceded than the runner-up (Atletico Madrid). However, Real Madrid ended the season in 3rd place having scored 30 goals more than the runner-up, and 5 goals less than the season champion.
+
+This project analyzes different match statistics and their effects on win rates. It covers the use of R in creating different predictive models, and their effect in predicting win rates for different seasons.
+
+Data Source
+-----------------------
+The data required for this project is a table consisting of different statistics for every game of the 2016/2017 & 2017/2018 la liga primera division seasons. This data is extracted from [Football-Data](https://www.football-data.co.uk/spainm.php)
+
+```{r read_seasonsData}
+#read csv file for the 2016/2017 season
+laliga1617 <- read.csv("Data/laliga_pd2016_2017.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+
+#Display the data sets and the data structure 
+head(laliga1617)
+tail(laliga1617)
+str(laliga1617)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Data  Description
+-----------------------
+The variables in the csv files represent statistics recorded for every game day in the season. The value of the first variable shows the division - in this case, SP1 (Spanish Primera Division 1) is repeated for all rows. Columns 23 through 64 represent game odds for different betting companies.
+The analysis and models for this project will be based only on the game statistics i.e. columns 2 through 22. These columns are defined in the next code chunk
+
+```{r header_description}
+#create data frame for the header names and their definition
+headers <- data.frame(colnames(laliga1617[2:22]), c("Match Date","Home Team","Away Team","Full Time Home Team Goals","Full Time Away Team Goals","Full Time Result","Half Time Home Team Goals","Half Time Away Team Goals","Half Time Result","Home Team Shots","Away Team Shots","Home Team Shots on Target","Away Team Shots on Target","Home Team Fouls Committed","Away Team Fouls Committed","Home Team Corners","Away Team Corners","Home Team Yellow Cards","Away Team Yellow Cards","Home Team Red Cards","Away Team Red Cards"))
+
+#define the column names of the data frame created
+colnames(headers) <- c("HeaderName", "Definition")
+
+headers
+```
+
