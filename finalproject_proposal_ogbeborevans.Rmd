@@ -36,7 +36,7 @@ This project analyzes different match statistics and their effects on win rates.
 
 Data Needs and Sources
 -----------------------
-The data required for this project is a table consisting of different statistics for every game of the season. This data will be extracted from [Football-Data](https://www.football-data.co.uk/spainm.php)
+The data required for this project is a table consisting of different statistics for every game of the season. This data will be extracted from [footystats](https://footystats.org/download-stats-csv)
 
 Anticipated Challenges
 -----------------------

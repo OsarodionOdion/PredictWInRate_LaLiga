@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r libraries}
 library(ggplot2)
+library(dplyr)
 
 ```
 
@@ -43,11 +44,11 @@ This project analyzes different match statistics and their effects on win rates.
 
 Data Source
 -----------------------
-The data required for this project is a table consisting of different statistics for every game of the 2016/2017 & 2017/2018 la liga primera division seasons. This data is extracted from [Football-Data](https://www.football-data.co.uk/spainm.php)
+The data required for this project is a table consisting of different statistics for every game of the 2016/2017 & 2017/2018 la liga primera division seasons. This data is extracted from [footystats](https://footystats.org/download-stats-csv)
 
 ```{r read_seasonsData}
 #read csv file for the 2016/2017 season
-laliga1617 <- read.csv("Data/laliga_pd2016_2017.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+laliga1617 <- read.csv("Data/spain-la-liga-teams-2016-to-2017-stats.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
 
 #Display the data sets and the data structure 
 head(laliga1617)
@@ -57,16 +58,32 @@ str(laliga1617)
 
 Data  Description
 -----------------------
-The variables in the csv files represent statistics recorded for every game day in the season. The value of the first variable shows the division - in this case, SP1 (Spanish Primera Division 1) is repeated for all rows. Columns 23 through 64 represent game odds for different betting companies.
-The analysis and models for this project will be based only on the game statistics i.e. columns 2 through 22. These columns are defined in the next code chunk
+The variables in the csv files represent game statistics and betting odds recorded for the season. The analysis and models for this project will be based only on the game statistics. Among the game statistics, the data for each variable has been broken down into home and away. For example columns 9 though 11 show wins, home wins and away wins, where wins = home wins + away wins.
 
-```{r header_description}
-#create data frame for the header names and their definition
-headers <- data.frame(colnames(laliga1617[2:22]), c("Match Date","Home Team","Away Team","Full Time Home Team Goals","Full Time Away Team Goals","Full Time Result","Half Time Home Team Goals","Half Time Away Team Goals","Half Time Result","Home Team Shots","Away Team Shots","Home Team Shots on Target","Away Team Shots on Target","Home Team Fouls Committed","Away Team Fouls Committed","Home Team Corners","Away Team Corners","Home Team Yellow Cards","Away Team Yellow Cards","Home Team Red Cards","Away Team Red Cards"))
+```{r display_wins}
+head(laliga1617[,9:11])
+```
 
-#define the column names of the data frame created
-colnames(headers) <- c("HeaderName", "Definition")
+I will be reassigning only the whole variables for the game statistics to the laliga1617 data frame (i.e. excluding the betting odds and the home and away variables for most of the game statistics)
 
-headers
+```{r game_stats_data}
+laliga1617 <- laliga1617 %>% select(1,9,12,15,18,21,25,26,27,37,40,43,55,58,61,64,67,70,73,76,79,82,85,88,91)
+head(laliga1617)
+str(laliga1617)
+```
+
+
+```{r summary_stats}
+summary(laliga1617)
+cormat <- cor(laliga1617[,2:25])
+cormat
+```
+
+```{r correlation_plot}
+corrplot::corrplot(cormat, )
+```
+
+```{r}
+
 ```
 
