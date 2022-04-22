@@ -13,6 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r libraries}
 library(ggplot2)
 library(dplyr)
+library(corrplot)
+library(skimr)
+library(MLmetrics)
 
 ```
 
@@ -72,12 +75,12 @@ head(laliga1617)
 str(laliga1617)
 ```
 
-The response variable for the predictive models will be win rate. In soccer, a draw wins both teams 1 point, and a win earns the winning team 3 points. In calculating the win rate, wins will be calculated as a sum of games won and one-third of games drawn. From this, the win rate can be calculated as a ratio of wins to the number of games in a season (wins+draws+losses).
+The response variable for the predictive models will be season points. In soccer, a draw wins both teams 1 point, and a win earns the winning team 3 points. Therefore the season points is a sum of 3 x the number of games won and the number of games drawn
 
 ```{r win_rate}
 #calculating win rate for each team.
 laliga1617 <- laliga1617 %>%
-  mutate(win_rate = 100 * (wins+(0.33*draws))/(wins+draws+losses))
+  mutate(season_points = (3*wins)+draws)
 
 ```
 
@@ -103,31 +106,53 @@ The correlation plot provides insights on the effect of other variables (excludi
 
 ```{r scatter_plots}
 g <- ggplot(laliga1617)
-g + aes(x=goals_scored, y=win_rate)+geom_point()+geom_smooth(method = "lm")
-g + aes(x=minutes_per_goal_conceded, y=win_rate)+geom_point()+geom_smooth(method = "lm")
-g + aes(x=clean_sheets, y=win_rate)+geom_point()+geom_smooth(method = "lm")
-g + aes(x=corners_total, y=win_rate)+geom_point()+geom_smooth(method = "lm")
-g + aes(x=average_possession, y=win_rate)+geom_point()+geom_smooth(method = "lm")
-g + aes(x=shots_on_target, y=win_rate)+geom_point()+geom_smooth(method = "lm")
-g + aes(x=shots_off_target, y=win_rate)+geom_point()+geom_smooth(method = "lm")
-g + aes(x=goal_difference_half_time, y=win_rate)+geom_point()+geom_smooth(method = "lm")
-g + aes(x=leading_at_half_time, y=win_rate)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=goals_scored, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=goals_conceded, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=clean_sheets, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=corners_total, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=average_possession, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=shots_on_target, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=shots_off_target, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=goal_difference_half_time, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=leading_at_half_time, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=cards_total, y=season_points)+geom_point()+geom_smooth(method = "lm")
 ```
 
-The shape of the confidence interval has been included in the scatter plots to aid with comprehending the variations. Contrary to notion of Spanish football, where high ball possession is perceived as a principal contributor to win rate, it was interesting to see that average possession and total corner kicks were among variables with the thickest band. 
+The shape of the confidence interval has been included in the scatter plots to aid with comprehending the variations. Contrary to the notion of Spanish football, where high ball possession is perceived as a principal contributor to winning games, it was interesting to see that average possession and total corner kicks with the thickest bands. Indicating both variables might have the least correlation among the plotted variables. (N.B. While correlation analysis can provide a summary of the relationship between variables, it can only determine direct relationship. In regression, we are seeking to determine how much the dependent variable changes given a change in the independent variable. i.e. "y" as a function of "x")
 
-Model building
----------------
+Model building & assessment
+---------------------------
 Two models would be considered in building the predictive models - the base model(null model) and the full model.
 
-```{r null_full}
-nullModel <- lm(win_rate ~ 1, data = laliga1617)
-fullModel <- lm(win_rate ~ goals_scored + minutes_per_goal_conceded + clean_sheets + corners_total + average_possession +
-                  shots_on_target + shots_off_target + goal_difference_half_time + leading_at_half_time, data = laliga1617)
+```{r models}
+nullModel <- lm(season_points ~ 1, data = laliga1617)
+fullModel <- lm(season_points ~ goals_scored + goals_conceded + clean_sheets + corners_total + average_possession+
+                shots_on_target+shots_off_target+goal_difference_half_time+leading_at_half_time+cards_total,
+                data = laliga1617)
 
 ```
 
+```{r model_summary}
+summary(nullModel)
+summary(fullModel)
+```
 
+```{r residual_analysis}
+plot(nullModel$residuals, col="blue")
+plot(fullModel$residuals, col="green")
+```
+
+The null model provides a base comparison for the full model. It indicates an intercept of 53 season points. The full model has a high R-squared value and a low p-value which indicate the model fits well and is a good predictor of season points. The randomness presented by the residual plots support the R-squared value.
+
+```{r MAE_values}
+MAE_models <- c(MAE(laliga1617$season_points, nullModel$fitted.values),
+                MAE(laliga1617$season_points, fullModel$fitted.values))
+
+MAE_result <- data.frame(MAE_models[1],MAE_models[2])
+names(MAE_result) <- c("nullModel","fullModel")
+MAE_result
+```
+The value of the Mean Absolute Error (MAE) also qualifies the full model as a good predictor for season points
 
 Dealing with Multi-colliearity
 -------------------------------
