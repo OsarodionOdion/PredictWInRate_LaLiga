@@ -32,7 +32,7 @@ The Spanish la liga is often referred to as the most competitive football (socce
 
 With lesser goals scored and more goals conceded than the runner-up, Real Madrid was the crowned champion of the 2016-2017 la liga Season. 2017-2018 season was won by Barcelona with more goals scored and more goals conceded than the runner-up (Atletico Madrid). However, Real Madrid ended the season in 3rd place having scored 30 goals more than the runner-up, and 5 goals less than the season champion.
 
-This project analyzes different match statistics and their effects on win rates. It covers the use of R in creating different predictive models, and their effect in predicting win rates for different seasons.
+This project analyzes different match statistics and their effects on win rate. It covers the use of R in creating different predictive models, and their effect in predicting win rates for different seasons.
 
 Data Needs and Sources
 -----------------------
