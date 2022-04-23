@@ -234,21 +234,23 @@ act_vs_pred_1819[order(-act_vs_pred_1819$actual_season_points),][1:10,]
 
 
 ```{r plot_actual_vs_predicted}
-ggplot(act_vs_pred_1718, aes(x = actual_season_points, y = predicted_season_points)) + geom_point() +
-  ggtitle("Actual vs Predicted for La Liga 2017/2018 Season")
+# install.packages("ggrepel")
+library("ggrepel")
 
-ggplot(act_vs_pred_1819, aes(x = actual_season_points, y = predicted_season_points)) + geom_point() +
-  ggtitle("Actual vs Predicted for La Liga 2018/2019 Season")
+ggplot(act_vs_pred_1718, aes(x = actual_season_points, y = predicted_season_points)) + geom_point() + geom_abline() +
+  ggtitle("Actual vs Predicted Season Points for La Liga 2017/2018 Season") +
+  geom_text_repel(aes(label = Team_name), size = 3)
+
+ggplot(act_vs_pred_1819, aes(x = actual_season_points, y = predicted_season_points)) + geom_point() + geom_abline() +
+  ggtitle("Actual vs Predicted Season Points for La Liga 2018/2019 Season") +
+  geom_text_repel(aes(label = Team_name), size = 3)
 
 ```
 
 Observation
 ------------
+The MAE of the predicted and actual values for the 2017/2018 & 2018/2019 seasons affirm the effectiveness of the newModel in predicting season points. The scatter plots provide a visual presentation of the predicted and actual values, where teams above the straight line have had higher predicted points than actual points, and the opposite for teams below the line. The model has also predicted higher points for most teams in the 2018/2019 season.
 
-
-Conclusion
------------
-
-
-
-
+Conclusion/Future Work
+----------------------
+Regression analysis can be useful in assessing different match statistics and their effects on teams performance. Data analytics is increasingly used by managers in making tactical decisions, and by players during games and training sessions. As a fan, I have an interest in further exploring statistical methods for predicting game outcomes. This can be useful in creating predictor applications for bettors.
