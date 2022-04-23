@@ -61,7 +61,7 @@ str(laliga1617)
 
 Data  Description and Selection
 -------------------------------
-The variables in the csv files represent game statistics and betting odds recorded for the season. The analysis and models for this project will be based only on the game statistics. Among the game statistics, the data for each variable has been broken down into home and away. For example columns 9 though 11 show wins, home wins and away wins, where wins = home wins + away wins.
+The variables (predictors) in the csv files represent game statistics and betting odds recorded for the season. The analysis and models for this project will be based only on the game statistics. Among the game statistics, the data for each variable has been broken down into home and away. For example columns 9 though 11 show wins, home wins and away wins, where wins = home wins + away wins.
 
 ```{r display_wins}
 head(laliga1617[,9:11])
@@ -86,7 +86,7 @@ laliga1617 <- laliga1617 %>%
 
 Exploratory Data Analysis (EDA)
 --------------------------
-The EDA provides a summary of our data, and an investigation into the relationships between the variables.
+The EDA provides a summary of our data, and an investigation into the relationships between the predictors.
 
 ```{r summary_stats}
 summary(laliga1617)
@@ -102,7 +102,7 @@ corrplot::corrplot(cormat, )
 
 ```
 
-The correlation plot provides insights on the effect of other variables (excluding wins, draws and losses) on win rate. Scatter plots are provided for further exploration.
+The correlation plot provides insights on the effect of other predictors (excluding wins, draws and losses) on win rate. Scatter plots are provided for further exploration.
 
 ```{r scatter_plots}
 g <- ggplot(laliga1617)
@@ -116,9 +116,12 @@ g + aes(x=shots_off_target, y=season_points)+geom_point()+geom_smooth(method = "
 g + aes(x=goal_difference_half_time, y=season_points)+geom_point()+geom_smooth(method = "lm")
 g + aes(x=leading_at_half_time, y=season_points)+geom_point()+geom_smooth(method = "lm")
 g + aes(x=cards_total, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=draw_at_half_time, y=season_points)+geom_point()+geom_smooth(method = "lm")
+g + aes(x=shots, y=season_points)+geom_point()+geom_smooth(method = "lm")
+
 ```
 
-The shape of the confidence interval has been included in the scatter plots to aid with comprehending the variations. Contrary to the notion of Spanish football, where high ball possession is perceived as a principal contributor to winning games, it was interesting to see that average possession and total corner kicks with the thickest bands. Indicating both variables might have the least correlation among the plotted variables. (N.B. While correlation analysis can provide a summary of the relationship between variables, it can only determine direct relationship. In regression, we are seeking to determine how much the dependent variable changes given a change in the independent variable. i.e. "y" as a function of "x")
+The shape of the confidence interval has been included in the scatter plots to aid with comprehending the variations. Contrary to the notion of Spanish football, where high ball possession is perceived as a principal contributor to winning games, it was interesting to see that average possession and total corner kicks with the thickest bands. Indicating both predictors might have the least correlation among the plotted predictors. (N.B. While correlation analysis can provide a summary of the relationship between predictors, it can only determine direct relationship. In regression, we are seeking to determine how much the dependent variable changes given a change in the independent variable. i.e. "y" as a function of "x")
 
 Model building & assessment
 ---------------------------
@@ -140,6 +143,7 @@ summary(fullModel)
 ```{r residual_analysis}
 plot(nullModel$residuals, col="blue")
 plot(fullModel$residuals, col="green")
+
 ```
 
 The null model provides a base comparison for the full model. It indicates an intercept of 53 season points. The full model has a high R-squared value and a low p-value which indicate the model fits well and is a good predictor of season points. The randomness presented by the residual plots support the R-squared value.
@@ -154,9 +158,29 @@ MAE_result
 ```
 The value of the Mean Absolute Error (MAE) also qualifies the full model as a good predictor for season points
 
-Dealing with Multi-colliearity
+Assessing with Multi-Collinearity
 -------------------------------
+```{r summary_assessingMcol}
+corrplot(cormat)
+summary(fullModel)
+```
 
+Some predictors (such as "shots_on_target", "shots_off_target", "leading_at_half_time") with a positive linear association with season points, as seen in the correlation plot, have been estimated to have a negative linear association with season points, as presented by the direction of their estimated values (-ve) in the summary result. This is as a result of multi-collinearity. "shots_on_target" & "shots_off_target" are highly correlated with themselves. While "leading_at_half_time" is highly correlated with "goals_difference_half_time". To resolve this, a new model would be created with "shots" replacing "shots_on_target" & "shots_off_target", and without "leading_at_half_time".
+
+```{r newModel}
+newModel <- lm(season_points ~ goals_scored + goals_conceded + clean_sheets + corners_total + average_possession+
+                shots+goal_difference_half_time+cards_total,
+                data = laliga1617)
+summary(newModel)
+```
+
+```{r vif}
+library(car)
+
+install.packages("devtools")
+vif(fullModel)
+vif(newModel)
+```
 
 
 
