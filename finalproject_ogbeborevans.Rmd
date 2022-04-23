@@ -52,11 +52,15 @@ The data required for this project is a table consisting of different statistics
 ```{r read_seasonsData}
 #read csv file for the 2016/2017 season
 laliga1617 <- read.csv("Data/spain-la-liga-teams-2016-to-2017-stats.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+laliga1718 <- read.csv("Data/spain-la-liga-teams-2017-to-2018-stats.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
 
 #Display the data sets and the data structure 
 head(laliga1617)
+head(laliga1718)
 tail(laliga1617)
+tail(laliga1718)
 str(laliga1617)
+str(laliga1718)
 ```
 
 Data  Description and Selection
@@ -80,6 +84,8 @@ The response variable for the predictive models will be season points. In soccer
 ```{r win_rate}
 #calculating win rate for each team.
 laliga1617 <- laliga1617 %>%
+  mutate(season_points = (3*wins)+draws)
+laliga1718 <- laliga1718 %>%
   mutate(season_points = (3*wins)+draws)
 
 ```
@@ -174,8 +180,34 @@ newModel <- lm(season_points ~ goals_scored + goals_conceded + clean_sheets + co
 summary(newModel)
 ```
 
-```{r vif}
+```{r MAE_newModel}
+MAE_result$newModel <- MAE(laliga1617$season_points, newModel$fitted.values)
 
+MAE_result
+```
+
+
+```{r}
+predict_laliga1718 <- predict(newModel, newdata = laliga1718)
+```
+
+
+```{r}
+MAE_laliga1718 <- MAE(laliga1718$season_points, predict_laliga1718)
+MAE_laliga1718
+
+```
+
+```{r}
+act_vs_pred <- data.frame(actual_season_points = laliga1718[,"season_points"],
+                          predicted_season_points = predict_laliga1718)
+head(act_vs_pred)
+act_vs_pred[order(-act_vs_pred$actual_season_points),][1:10,]
+```
+
+
+```{r}
+ggplot(act_vs_pred, aes(x = actual_season_points, y = predicted_season_points)) + geom_point()
 ```
 
 
