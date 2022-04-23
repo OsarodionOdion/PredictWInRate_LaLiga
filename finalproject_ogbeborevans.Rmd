@@ -175,11 +175,7 @@ summary(newModel)
 ```
 
 ```{r vif}
-library(car)
 
-install.packages("devtools")
-vif(fullModel)
-vif(newModel)
 ```
 
 
