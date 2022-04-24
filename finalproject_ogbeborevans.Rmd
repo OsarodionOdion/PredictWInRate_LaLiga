@@ -11,11 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r libraries}
+# install.packages("ggrepel")
 library(ggplot2)
 library(dplyr)
 library(corrplot)
 library(skimr)
 library(MLmetrics)
+library(ggrepel)
 
 ```
 
@@ -65,10 +67,12 @@ For this project, the 'laliga1617' and 'laliga1718' will be used as the train an
 #Display structure, top and bottom rows of both train & test data sets
 str(laliga1617)
 str(laliga1718)
-head(laliga1617)
-head(laliga1718)
-tail(laliga1617)
-tail(laliga1718)
+ 
+# head(laliga1617)
+# head(laliga1718)
+
+# tail(laliga1617)
+# tail(laliga1718)
 
 ```
 
@@ -113,15 +117,36 @@ An observation from the summary is the absence of missing data, which can affect
 
 ```{r correlation_plot}
 cormat <- cor(laliga1617[,2:26])
-cormat
+# cormat
 corrplot::corrplot(cormat, )
 
 ```
 
 The correlation plot provides insights on the effect of other predictors (excluding wins, draws and losses) on win rate. Scatter plots are provided for further exploration.
 
-```{r scatter_plots}
+```{r barplots}
 g <- ggplot(laliga1617)
+g + geom_bar(aes(reorder(team_name,season_points), y=season_points), stat = 'identity') + xlab("team_name") + coord_flip()
+g + geom_bar(aes(reorder(team_name,wins), y=wins), stat = 'identity') + xlab("team_name") + coord_flip()
+g + geom_bar(aes(reorder(team_name,losses), y=losses), stat = 'identity') + xlab("team_name") + coord_flip()
+g + geom_bar(aes(reorder(team_name,draws), y=draws), stat = 'identity') + xlab("team_name") + coord_flip()
+g + geom_bar(aes(reorder(team_name,goals_scored), y=goals_scored), stat = 'identity') + xlab("team_name") + coord_flip()
+
+```
+
+Shot analysis
+
+```{r barplots_by_shots}
+g + geom_bar(aes(reorder(team_name,shots), y=shots,fill=shots_on_target), stat = 'identity') + xlab("team_name") + coord_flip()
+g + geom_bar(aes(reorder(team_name,shots), y=shots,fill=shots_off_target), stat = 'identity') + xlab("team_name") + coord_flip()
+g + aes(x=points_per_game, y=shots_on_target)+geom_point()+geom_smooth(method = "lm")+geom_text_repel(aes(label=team_name), size=3)
+g + aes(x=points_per_game, y=shots_off_target)+geom_point()+geom_smooth(method = "lm")+geom_text_repel(aes(label=team_name), size=3)
+
+```
+
+Predictor Analysis
+
+```{r scatter_plots}
 g + aes(x=goals_scored, y=season_points)+geom_point()+geom_smooth(method = "lm")
 g + aes(x=goals_conceded, y=season_points)+geom_point()+geom_smooth(method = "lm")
 g + aes(x=clean_sheets, y=season_points)+geom_point()+geom_smooth(method = "lm")
@@ -234,9 +259,6 @@ act_vs_pred_1819[order(-act_vs_pred_1819$actual_season_points),][1:10,]
 
 
 ```{r plot_actual_vs_predicted}
-# install.packages("ggrepel")
-library("ggrepel")
-
 ggplot(act_vs_pred_1718, aes(x = actual_season_points, y = predicted_season_points)) + geom_point() + geom_abline() +
   ggtitle("Actual vs Predicted Season Points for La Liga 2017/2018 Season") +
   geom_text_repel(aes(label = Team_name), size = 3)
@@ -253,4 +275,4 @@ The MAE of the predicted and actual values for the 2017/2018 & 2018/2019 seasons
 
 Conclusion/Future Work
 ----------------------
-Regression analysis can be useful in assessing different match statistics and their effects on teams performance. Data analytics is increasingly used by managers in making tactical decisions, and by players during games and training sessions. As a fan, I have an interest in further exploring statistical methods for predicting game outcomes. This can be useful in creating predictor applications for bettors.
+Regression analysis can be useful in assessing different match statistics and their effects on teams performances. Data analytics is increasingly used by managers in making tactical decisions, and by players during games and training sessions. As a fan, I have an interest in further exploring statistical methods for predicting game outcomes. This can be useful in creating predictor applications for bettors.
