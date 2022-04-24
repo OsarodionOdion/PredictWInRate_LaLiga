@@ -288,4 +288,6 @@ Regression analysis can be useful in assessing different match statistics and th
 
 Closing Remarks
 ----------------
-I am thankful to God for everything. I am thankful to Professor Mark Isken for all the preparation exercises that have brought me this far.
+I am thankful to God for everything.
+
+I am thankful to Professor Mark Isken for all the preparation exercises that have contributed towards the successful completion of this project.
