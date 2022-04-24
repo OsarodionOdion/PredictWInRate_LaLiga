@@ -18,7 +18,7 @@ Prediction: This covers the prediction results, observations and conclusions.
 
 How to run
 
-This project has been written in R. The csv files used in this project have been provided in the "Data" folder. They can also be downloaded from footy stats (https://footystats.org/download-stats-csv)
+This project has been written in R, and should be run in R studio. A knitted html file has been provided, and can be viewed in a browser. The csv files used in this project have been provided in the "Data" folder. They can also be downloaded from footy stats (https://footystats.org/download-stats-csv)
 
 Credits
 
