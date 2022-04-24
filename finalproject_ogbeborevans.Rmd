@@ -157,7 +157,6 @@ g + aes(x=shots_off_target, y=season_points)+geom_point()+geom_smooth(method = "
 g + aes(x=goal_difference_half_time, y=season_points)+geom_point()+geom_smooth(method = "lm")
 g + aes(x=leading_at_half_time, y=season_points)+geom_point()+geom_smooth(method = "lm")
 g + aes(x=cards_total, y=season_points)+geom_point()+geom_smooth(method = "lm")
-g + aes(x=draw_at_half_time, y=season_points)+geom_point()+geom_smooth(method = "lm")
 g + aes(x=shots, y=season_points)+geom_point()+geom_smooth(method = "lm")
 
 ```
